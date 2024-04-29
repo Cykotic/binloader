@@ -7,7 +7,6 @@ const net = require('net');
         const port = 9090; // Default port
         const filePath = 'ps4debug.bin'; // File to send
 
-        // Asynchronously read the binary file
         fs.readFile(filePath, (err, content) => {
             if (err) {
                 console.error('Failed to read file:', err);
@@ -19,9 +18,9 @@ const net = require('net');
                 port,
                 host
             }, () => {
-                console.log('Connected to PS4 debug server');
+                console.log('[ps4debug] - connected');
                 client.write(content, () => {
-                    console.log('Payload Sent!');
+                    console.log('[ps4debug] - Payload Sent!');
                     client.end(); // Close the connection after sending the payload
                 });
             });
