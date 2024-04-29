@@ -1,4 +1,4 @@
-# PS4 Debug Payload Sender
+# ps4debug.bin sender
 
 This Node.js script is designed to send a binary payload to a PlayStation 4 debug server via TCP. The script connects to a specified PS4 IP address and port, reads a binary file (e.g., a debug payload), and sends this file to the PS4.
 
