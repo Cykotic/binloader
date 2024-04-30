@@ -1,41 +1,44 @@
-const fs = require("fs");
+const fs = require('fs').promises;
 const net = require('net');
 
-(async () => {
+async function SendPS4Payload(host, port, filePath) {
     try {
-        const host = '192.168.137.151'; // PS4 IP address
-        const port = 9090; // Default port
-        const filePath = 'ps4debug.bin'; // File to send
+        // Read the file asynchronously
+        const content = await fs.readFile(filePath);
 
-        fs.readFile(filePath, (err, content) => {
-            if (err) {
-                console.error('Failed to read file:', err);
-                return; // Exit if file reading fails
-            }
-
-            // Create a TCP connection to the PS4 debug server
+        // Return a promise that resolves when the payload is sent
+        return new Promise((resolve, reject) => {
             const client = net.createConnection({
-                port,
-                host
+                host,
+                port
             }, () => {
-                console.log('[ps4debug] - connected');
+                console.log('[ps4debug] - Connected');
                 client.write(content, () => {
                     console.log('[ps4debug] - Payload Sent!');
-                    client.end(); // Close the connection after sending the payload
+                    client.end();
+                    resolve();
                 });
             });
 
-            client.on('error', (error) => {
-                console.error('Connection error:', error);
-                client.end(); // Ensure to close the connection on error
-            });
-
-            // Log when the connection is closed
-            client.on('close', () => {
-                console.log('Connection to PS4 debug server closed');
-            });
+            client.on('error', reject);
+            client.on('end', resolve);
         });
     } catch (error) {
-        console.error('An unexpected error occurred:', error);
+        throw new Error(error);
     }
-})().catch(console.error);
+}
+
+async function main() {
+    const host = '192.168.137.151'; // PS4 IP address
+    const port = 9090; // Default port
+    const filePath = 'ps4debug.bin'; // File to send
+
+    try {
+        await SendPS4Payload(host, port, filePath);
+        console.log('[ps4debug] - Payload transfer completed successfully.');
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+main();
