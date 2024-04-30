@@ -19,4 +19,4 @@ To use this script, you need:
 To run the script, navigate to the directory containing the script and execute it using Node.js:
 
 ```bash
-node sendPayload.js
+node index.js
